@@ -9,6 +9,7 @@ const ACCESS_KEY_ID = 'S3RVER';
 const ACCESS_KEY_SECRET = 'S3RVER';
 const S3_ENDPOINT = 'http://localhost:4923';
 const S3_REGION = 'eu-west-1';
+const S3_URL_STYLE = 'vhost';
 
 enum AWSConfigType {
     EMPTY,
@@ -23,6 +24,7 @@ const setAwsConfig = async function (conn: AsyncDuckDBConnection, type: AWSConfi
             await conn.query("SET s3_secret_access_key='';");
             await conn.query("SET s3_session_token='';");
             await conn.query(`SET s3_endpoint='${S3_ENDPOINT}';`);
+            await conn.query(`SET s3_url_style='${S3_URL_STYLE}';`);
             break;
         case AWSConfigType.VALID:
             await conn.query(`SET s3_region='${S3_REGION}';`);
@@ -30,6 +32,7 @@ const setAwsConfig = async function (conn: AsyncDuckDBConnection, type: AWSConfi
             await conn.query(`SET s3_secret_access_key='${ACCESS_KEY_SECRET}';`);
             await conn.query("SET s3_session_token='';");
             await conn.query(`SET s3_endpoint='${S3_ENDPOINT}';`);
+            await conn.query(`SET s3_url_style='${S3_URL_STYLE}';`);
             break;
         case AWSConfigType.INVALID:
             await conn.query("SET s3_region='a-very-remote-and-non-existent-s3-region';");
@@ -37,6 +40,7 @@ const setAwsConfig = async function (conn: AsyncDuckDBConnection, type: AWSConfi
             await conn.query("SET s3_secret_access_key='THISSECRETACCESSKEYISNOTVALID';");
             await conn.query("SET s3_session_token='INVALIDSESSIONTOKEN';");
             await conn.query(`SET s3_endpoint='${S3_ENDPOINT}';`);
+            await conn.query(`SET s3_url_style='${S3_URL_STYLE}';`);
             break;
     }
 };
@@ -79,6 +83,7 @@ export function testHTTPFS(sdb: () => duckdb.DuckDBBindings): void {
             conn!.query("SET s3_secret_access_key='THISSECRETACCESSKEYISNOTVALID';");
             conn!.query("SET s3_session_token='ANICESESSIONTOKEN';");
             conn!.query("SET s3_endpoint='s3.some.sort.of.cloud';");
+            conn!.query("SET s3_url_style='vhost';");
             const globalFileInfoUpdated = BROWSER_RUNTIME.getGlobalFileInfo(module!);
             expect(globalFileInfoUpdated?.s3Config).toBeDefined();
             expect(globalFileInfoUpdated?.cacheEpoch).toEqual(cacheEpoch + 5);

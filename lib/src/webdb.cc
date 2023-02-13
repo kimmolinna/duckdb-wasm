@@ -690,7 +690,11 @@ void WebDB::RegisterCustomExtensionOptions(shared_ptr<duckdb::DuckDB> database) 
             webfs->Config()->duckdb_config_options.s3_endpoint = StringValue::Get(parameter);
             webfs->IncrementCacheEpoch();
         };
-
+        auto callback_s3_url_style = [](ClientContext& context, SetScope scope, Value& parameter) {
+            auto webfs = io::WebFileSystem::Get();
+            webfs->Config()->duckdb_config_options.s3_url_style = StringValue::Get(parameter);
+            webfs->IncrementCacheEpoch();
+        };
         config.AddExtensionOption("s3_region", "S3 Region", LogicalType::VARCHAR, Value(), callback_s3_region);
         config.AddExtensionOption("s3_access_key_id", "S3 Access Key ID", LogicalType::VARCHAR, Value(),
                                   callback_s3_access_key_id);
@@ -699,7 +703,9 @@ void WebDB::RegisterCustomExtensionOptions(shared_ptr<duckdb::DuckDB> database) 
         config.AddExtensionOption("s3_session_token", "S3 Session Token", LogicalType::VARCHAR, Value(),
                                   callback_s3_session_token);
         config.AddExtensionOption("s3_endpoint", "S3 Endpoint (default s3.amazonaws.com)", LogicalType::VARCHAR,
-                                  Value(), callback_s3_endpoint);
+                                  Value("s3.amazonaws.com"), callback_s3_endpoint);
+        config.AddExtensionOption("s3_url_style", "S3 url style ('vhost' default or 'path')", LogicalType::VARCHAR,
+                                  Value("vhost"), callback_s3_endpoint);
 
         webfs->IncrementCacheEpoch();
     }
