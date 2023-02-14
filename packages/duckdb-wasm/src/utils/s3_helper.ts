@@ -1,5 +1,5 @@
-import { S3Config } from "../bindings";
-import { sha256 } from "js-sha256";
+import {S3Config} from "../bindings";
+import {sha256} from "js-sha256";
 
 export interface S3Params {
     url: string,
@@ -20,11 +20,11 @@ export interface S3PayloadParams {
     contentType: string | null
 }
 
-const getHTTPHost = function (config: S3Config | undefined, url: string, bucket: string): string {
+const getHTTPHost = function (config : S3Config | undefined, url : string, bucket : string) : string {
     if (config?.endpoint?.startsWith("http")) {
         // Endpoint is a full url, we append the bucket
         const httpHost = `${config?.endpoint}`;
-        const offset = httpHost.indexOf("://") + 3;
+        const offset = httpHost.indexOf("://")+3;
         return httpHost.substring(offset);
     } else if (config?.endpoint) {
         // Endpoint is not a full url and the https://{bucket}.{domain} format will be used
@@ -35,7 +35,7 @@ const getHTTPHost = function (config: S3Config | undefined, url: string, bucket:
     }
 }
 
-export function getS3Params(config: S3Config | undefined, url: string, method: string): S3Params {
+export function getS3Params (config : S3Config | undefined, url: string, method : string) : S3Params {
     const parsedS3Url = parseS3Url(url);
     return {
         url: parsedS3Url.path,
@@ -47,19 +47,19 @@ export function getS3Params(config: S3Config | undefined, url: string, method: s
         accessKeyId: (config?.accessKeyId) ?? "",
         secretAccessKey: (config?.secretAccessKey) ?? "",
         sessionToken: (config?.sessionToken) ?? "",
-        dateNow: new Date().toISOString().replace(/-/g, '').split('T')[0],
-        datetimeNow: new Date().toISOString().replace(/-/g, '').replace(/:/g, '').split('.')[0] + 'Z',
+        dateNow: new Date().toISOString().replace(/-/g,'').split('T')[0],
+        datetimeNow: new Date().toISOString().replace(/-/g,'').replace(/:/g,'').split('.')[0]+ 'Z',
     };
 }
 
-export function uriEncode(input: string, encode_slash = false) {
+export function uriEncode(input : string, encode_slash = false) {
     // https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
 
     const hexDigit = "0123456789ABCDEF";
     let result = "";
 
     for (let i = 0; i < input.length; i++) {
-        const ch: string = input[i];
+        const ch : string = input[i];
 
         if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9') || ch == '_' ||
             ch == '-' || ch == '~' || ch == '.') {
@@ -79,7 +79,7 @@ export function uriEncode(input: string, encode_slash = false) {
     return result;
 }
 
-export function createS3Headers(params: S3Params, payloadParams: S3PayloadParams | null = null): Map<string, string> {
+export function createS3Headers(params: S3Params, payloadParams : S3PayloadParams | null = null) : Map<string, string> {
     // this is the sha256 of the empty string, its useful since we have no payload for GET requests
     const payloadHash = (payloadParams?.contentHash) ?? "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
 
@@ -144,7 +144,7 @@ export function createS3Headers(params: S3Params, payloadParams: S3PayloadParams
     return res;
 }
 
-const createS3HeadersFromS3Config = function (config: S3Config | undefined, url: string, method: string, contentType: string | null = null, payload: Uint8Array | null = null): Map<string, string> {
+const createS3HeadersFromS3Config = function (config : S3Config | undefined, url : string, method : string, contentType: string | null = null, payload : Uint8Array | null = null) : Map<string, string> {
     const params = getS3Params(config, url, method);
     const payloadParams = {
         contentType: contentType,
@@ -153,7 +153,7 @@ const createS3HeadersFromS3Config = function (config: S3Config | undefined, url:
     return createS3Headers(params, payloadParams);
 }
 
-export function addS3Headers(xhr: XMLHttpRequest, config: S3Config | undefined, url: string, method: string, contentType: string | null = null, payload: Uint8Array | null = null) {
+export function addS3Headers(xhr: XMLHttpRequest, config : S3Config | undefined, url : string, method: string, contentType: string | null = null, payload : Uint8Array | null = null) {
     if (config?.accessKeyId || config?.sessionToken) {
         const headers = createS3HeadersFromS3Config(config, url, method, contentType, payload);
         headers.forEach((value: string, header: string) => {
@@ -166,7 +166,7 @@ export function addS3Headers(xhr: XMLHttpRequest, config: S3Config | undefined, 
     }
 }
 
-export function parseS3Url(url: string): { bucket: string, path: string } {
+export function parseS3Url (url: string) : {bucket : string, path : string} {
     if (url.indexOf("s3://") != 0) {
         throw new Error("URL needs to start with s3://");
     }
@@ -185,10 +185,10 @@ export function parseS3Url(url: string): { bucket: string, path: string } {
         throw new Error("URL needs to contain key");
     }
 
-    return { bucket: bucket, path: path }
+    return {bucket: bucket, path: path}
 }
 
-export function getHTTPUrl(config: S3Config | undefined, url: string): string {
+export function getHTTPUrl(config : S3Config | undefined, url : string) : string {
     const parsedUrl = parseS3Url(url);
     if (config?.endpoint?.startsWith("http")) {
         // Endpoint is a full url, we append the bucket

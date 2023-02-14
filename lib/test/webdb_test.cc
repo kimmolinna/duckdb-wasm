@@ -84,22 +84,18 @@ TEST(WebDB, S3ConfigParameters) {
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_access_key_id.c_str(), "");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_secret_access_key.c_str(), "");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_session_token.c_str(), "");
-    ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_url_style.c_str(), "");
 
     conn.connection().Query("SET s3_region='my-favorite-s3-region'");
     conn.connection().Query("SET s3_endpoint='amazon'");
     conn.connection().Query("SET s3_access_key_id='my-little-access-key-id'");
     conn.connection().Query("SET s3_secret_access_key='very-secret-key'");
     conn.connection().Query("SET s3_session_token='some-session-token'");
-    conn.connection().Query("SET s3_url_style='vhost'");
 
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_region.c_str(), "my-favorite-s3-region");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_endpoint.c_str(), "amazon");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_access_key_id.c_str(), "my-little-access-key-id");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_secret_access_key.c_str(), "very-secret-key");
     ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_session_token.c_str(), "some-session-token");
-    ASSERT_STREQ(web_fs_config->duckdb_config_options.s3_url_style.c_str(), "vhost");
-}
 }
 
 TEST(WebDB, ExtensionOptions) {

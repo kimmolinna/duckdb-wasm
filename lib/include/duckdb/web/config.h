@@ -65,7 +65,6 @@ struct DuckDBConfigOptions {
     std::string s3_access_key_id;
     std::string s3_secret_access_key;
     std::string s3_session_token;
-    std::string s3_url_style;
 };
 
 struct FileSystemConfig {
@@ -95,7 +94,6 @@ struct WebDBConfig {
         .s3_access_key_id = "",
         .s3_secret_access_key = "",
         .s3_session_token = "",
-        .s3_url_style = "",
     };
 
     /// Read from a document

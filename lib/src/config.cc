@@ -55,7 +55,6 @@ WebDBConfig WebDBConfig::ReadFrom(std::string_view args_json) {
                                   .s3_access_key_id = "",
                                   .s3_secret_access_key = "",
                                   .s3_session_token = "",
-                                  .s3_url_style = "",
                               }};
     rapidjson::Document doc;
     rapidjson::ParseResult ok = doc.Parse(args_json.begin(), args_json.size());
